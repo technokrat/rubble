@@ -20,10 +20,10 @@ cortex-m-rt = "0.6.11"
 panic-semihosting = "0.5.3"
 bbqueue = "0.4.1"
 
-nrf52810-hal = { version = "0.11", features = ["rt"], optional = true }
-nrf52811-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", optional = true, default-features = false }
-nrf52832-hal = { version = "0.11", features = ["rt"], optional = true }
-nrf52840-hal = { version = "0.11", features = ["rt"], optional = true }
+nrf52810-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", features = ["rt"], optional = true }
+nrf52811-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", features = ["rt"], optional = true, default-features = false }
+nrf52832-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", features = ["rt"], optional = true }
+nrf52840-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", features = ["rt"], optional = true }
 
 [dependencies.log]
 version = "0.4.8"
