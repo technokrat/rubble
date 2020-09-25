@@ -206,6 +206,11 @@ impl BleRadio {
         }
     }
 
+    /// Returns the radio as mutable..
+    pub fn radio_mut(&mut self) -> &mut RADIO {
+        self.radio
+    }
+
     /// Returns the current radio state.
     pub fn state(&self) -> STATE_R {
         self.radio.state.read().state()
