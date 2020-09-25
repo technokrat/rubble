@@ -371,9 +371,7 @@ impl BleRadio {
     /// Returns when the `update` method should be called the next time.
     pub fn recv_adv_interrupt<C: ScanCallback, F: AddressFilter>(
         &mut self,
-        timestamp: Instant,
         scanner: &mut BeaconScanner<C, F>,
-        rx_buf: &[u8],
     ) -> Option<Cmd> {
         if self.radio_mut().events_disabled.read().bits() == 0 {
             return None;
@@ -393,9 +391,10 @@ impl BleRadio {
             .modify(|_, w| w.ready_start().disabled());
         assert!(!self.state().is_tx());
 
-        let header = advertising::Header::parse(rx_buf);
+        let header = advertising::Header::parse(*self.rx_buf.as_ref().unwrap());
 
         // check that `payload_length` is in bounds
+        let rx_buf = self.rx_buf.take().unwrap();
         let pl_lim = cmp::min(2 + usize::from(header.payload_length()), rx_buf.len());
         let payload = &rx_buf[2..pl_lim];
         let cmd = scanner.process_adv_packet(header, payload, crc_ok);
