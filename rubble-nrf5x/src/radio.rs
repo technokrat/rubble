@@ -59,15 +59,15 @@ use nrf52840_hal::pac;
 use core::cmp;
 use core::sync::atomic::{compiler_fence, Ordering};
 use pac::{radio::state::STATE_R, RADIO};
+use rubble::beacon::BeaconScanner;
+use rubble::beacon::ScanCallback;
 use rubble::config::Config;
+use rubble::link::filter::AddressFilter;
 use rubble::link::{
     advertising, data, Cmd, LinkLayer, RadioCmd, Transmitter, CRC_POLY, MIN_PDU_BUF,
 };
 use rubble::phy::{AdvertisingChannel, DataChannel};
 use rubble::time::{Duration, Instant};
-use rubble::beacon::ScanCallback;
-use rubble::link::filter::AddressFilter;
-use rubble::beacon::BeaconScanner;
 
 /// A packet buffer that can hold header and payload of any advertising or data channel packet.
 pub type PacketBuffer = [u8; MIN_PDU_BUF];
@@ -369,7 +369,7 @@ impl BleRadio {
     /// Automatically reconfigures the radio according to the `RadioCmd` returned by the BLE stack.
     ///
     /// Returns when the `update` method should be called the next time.
-    fn recv_adv_interrupt<C: ScanCallback, F: AddressFilter>(
+    pub fn recv_adv_interrupt<C: ScanCallback, F: AddressFilter>(
         &mut self,
         timestamp: Instant,
         scanner: &mut BeaconScanner<C, F>,
