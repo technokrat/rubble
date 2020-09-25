@@ -65,6 +65,9 @@ use rubble::link::{
 };
 use rubble::phy::{AdvertisingChannel, DataChannel};
 use rubble::time::{Duration, Instant};
+use rubble::beacon::ScanCallback;
+use rubble::link::filter::AddressFilter;
+use rubble::beacon::BeaconScanner;
 
 /// A packet buffer that can hold header and payload of any advertising or data channel packet.
 pub type PacketBuffer = [u8; MIN_PDU_BUF];
@@ -358,6 +361,44 @@ impl BleRadio {
             cmd
         };
 
+        Some(cmd)
+    }
+
+    /// Call this when the `RADIO` interrupt fires.
+    ///
+    /// Automatically reconfigures the radio according to the `RadioCmd` returned by the BLE stack.
+    ///
+    /// Returns when the `update` method should be called the next time.
+    fn recv_adv_interrupt<C: ScanCallback, F: AddressFilter>(
+        &mut self,
+        timestamp: Instant,
+        scanner: &mut BeaconScanner<C, F>,
+        rx_buf: &[u8],
+    ) -> Option<Cmd> {
+        if self.radio_mut().events_disabled.read().bits() == 0 {
+            return None;
+        }
+
+        // "Subsequent reads and writes cannot be moved ahead of preceding reads."
+        compiler_fence(Ordering::Acquire);
+
+        // Acknowledge DISABLED event:
+        self.radio_mut().events_disabled.reset();
+
+        let crc_ok = self.radio_mut().crcstatus.read().crcstatus().is_crcok();
+
+        // Important! Turn ready->start off before TXREADY is reached (in ~150µs)
+        self.radio_mut()
+            .shorts
+            .modify(|_, w| w.ready_start().disabled());
+        assert!(!self.state().is_tx());
+
+        let header = advertising::Header::parse(rx_buf);
+
+        // check that `payload_length` is in bounds
+        let pl_lim = cmp::min(2 + usize::from(header.payload_length()), rx_buf.len());
+        let payload = &rx_buf[2..pl_lim];
+        let cmd = scanner.process_adv_packet(header, payload, crc_ok);
         Some(cmd)
     }
 
