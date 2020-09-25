@@ -154,6 +154,9 @@ impl<'a> FromBytes<'a> for AdStructure<'a> {
                 let uuids = ServiceUuids::<Uuid16>::from_bytes(&mut ByteReader::new(ty_and_data))?;
                 AdStructure::ServiceUuids16(uuids)
             }
+            Type::COMPLETE_LOCAL_NAME => {
+                AdStructure::CompleteLocalName(core::str::from_utf8(data).unwrap())
+            }
             _ => AdStructure::Unknown { ty, data },
         })
     }

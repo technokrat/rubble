@@ -398,6 +398,7 @@ impl BleRadio {
         let pl_lim = cmp::min(2 + usize::from(header.payload_length()), rx_buf.len());
         let payload = &rx_buf[2..pl_lim];
         let cmd = scanner.process_adv_packet(header, payload, crc_ok);
+        self.rx_buf = Some(rx_buf);
         Some(cmd)
     }
 
