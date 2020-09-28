@@ -11,11 +11,11 @@ edition = "2018"
 
 [dependencies]
 rubble = { path = "../rubble", version = "0.0.3", default-features = false }
-nrf51-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", optional = true, default-features = false }
-nrf52810-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", optional = true, default-features = false }
-nrf52811-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", optional = true, default-features = false }
-nrf52832-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", optional = true, default-features = false }
-nrf52840-hal = { version = "0.11", git = "https://github.com/nrf-rs/nrf-hal.git", branch = "52811", optional = true, default-features = false }
+nrf51-hal = { version = "0.11", git = "https://github.com/technokrat/nrf-hal.git", branch = "various-changes", optional = true, default-features = false }
+nrf52810-hal = { version = "0.11", git = "https://github.com/technokrat/nrf-hal.git", branch = "various-changes", optional = true, default-features = false }
+nrf52811-hal = { version = "0.11", git = "https://github.com/technokrat/nrf-hal.git", branch = "various-changes", optional = true, default-features = false }
+nrf52832-hal = { version = "0.11", git = "https://github.com/technokrat/nrf-hal.git", branch = "various-changes", optional = true, default-features = false }
+nrf52840-hal = { version = "0.11", git = "https://github.com/technokrat/nrf-hal.git", branch = "various-changes", optional = true, default-features = false }
 
 [features]
 51 = ["nrf51-hal"]
