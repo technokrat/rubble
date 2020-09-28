@@ -157,6 +157,11 @@ impl<'a> FromBytes<'a> for AdStructure<'a> {
             Type::COMPLETE_LOCAL_NAME => {
                 AdStructure::CompleteLocalName(core::str::from_utf8(data).unwrap())
             }
+            Type::SERVICE_DATA_16BIT_UUID => {
+                let uuid = (data[1] as u16) << 8 | data[0] as u16;
+                let data = &data[2..];
+                AdStructure::ServiceData16{ uuid, data }
+            }
             _ => AdStructure::Unknown { ty, data },
         })
     }
